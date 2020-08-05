@@ -68,3 +68,11 @@
     color: white;
     font-family: Arial, Helvetica, sans-serif;
 }
+
+.listEl{
+    list-style: none;
+    margin-left: -130px;
+    margin-top: 10px;
+    width: 250px;
+}
+
