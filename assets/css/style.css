@@ -95,14 +95,14 @@
     list-style: none;
     
     margin-top: 10px;
-    width: 500px;
+    width: 60%;
     margin-bottom: 20px;
 }
 
 .line{
     margin-top: 40px;
     display: flex;
-    width: 50%;
+    width: 73%;
     justify-content: center;
     margin-right: 230px;
 }
