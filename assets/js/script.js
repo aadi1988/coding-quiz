@@ -91,14 +91,28 @@ function removeAllChildNodes(parent) {
     }
 }
 
+var checkInputField = function(){
+    var num = ["0","1","2","3","4","5","6","7","8","9"];
+    //console.log(num.includes(inputEl.value.charAt(0)));
+    if (num.includes(inputEl.value.charAt(0)) || inputEl.value === "" || inputEl.value === null){
+           window.alert("Please enter valid initials");
+           ;
+           return false;      
+    }
+    else{
+        return true;
+    }
+}
+
 var highScore = function(event){
     if (event.target === sbmtEl){
+        if(checkInputField()){
         removeAllChildNodes(newContent);
         removeAllChildNodes(newSubContent);
         removeAllChildNodes(ulEl);
         removeAllChildNodes(firstLiEl);
         score = JSON.parse(localStorage.getItem("scores"))
-        console.log("Heyyyyyyyyyyyy");
+        
         console.log(score);
         if (inputEl.value in score){
             score[inputEl.value].push(seconds);
@@ -118,10 +132,17 @@ var highScore = function(event){
         firstLiEl.appendChild(hEl);
         firstLiEl.className = "firstListEl";
         ulEl.appendChild(firstLiEl);
+        for (const key in score){
+            for (const highScore of score[key]){
+                var liEl = document.createElement("li");
+                liEl.textContent = key + " : " + highScore;
+                liEl.className = "listScore";
+                ulEl.appendChild(liEl);
+            }
+        }
         
-        var liEl = document.createElement("li");
-        liEl.textContent = inputEl.value + " - " + "22";
-        liEl.className = "listScore";
+       
+        
         var liBtnEl = document.createElement("li");
         var text1 = document.createTextNode("Go Back");
         var text2 = document.createTextNode("Clear High Scores");
@@ -132,11 +153,12 @@ var highScore = function(event){
         liBtnEl.appendChild(goBackBtn);
         liBtnEl.appendChild(clearScoresBtn);
         liBtnEl.className = "liBtnEl";
-        ulEl.appendChild(liEl);
+        
         ulEl.appendChild(liBtnEl);
         newSubContent.appendChild(ulEl);
 
     }
+  }
 }
 
 var finalPage = function(){
