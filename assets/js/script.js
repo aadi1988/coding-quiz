@@ -11,9 +11,26 @@ var newSubContent = document.querySelector("#subcontent");
 var btnEl = document.querySelector("#start");
 
 var mainEl = document.querySelector("#main");
-
+var finalDivEl = document.createElement("div");
+var hEl = document.createElement("h2");
+var h3El = document.createElement("h3");
+var inputEl = document.createElement("input");
+var labelEl = document.createElement("label");
+var sbmtEl = document.createElement("input");
+var ulEl = document.createElement("ul");
+var olEl = document.createElement("ol");
+var firstLiEl = document.createElement("li");
+var listDivEl = document.createElement("div");
+var goBackBtn = document.createElement("button");
+var clearScoresBtn = document.createElement("button");
 var question_num = 1;
+var score = new Object();
+var arr = [];
+var intId;
 
+var saveScores = function(){
+    localStorage.setItem("scores",JSON.stringify(score));
+}
 var qacontent = {
     1 : {
         "question": "Which of the following is not a data type supported by JavaScript?",
@@ -41,7 +58,7 @@ var qacontent = {
 
     5: {
         "question": "Which variable takes precedence over others if names are same?",
-        "options": ["Blur()", "Blur(contrast)","Blur(value)","Blur(depth)"],
+        "options": ["global", "Blur(contrast)","Blur(value)","Blur(depth)"],
         "answer": "para1.value=\"New Text\""
     },
 
@@ -54,17 +71,99 @@ var qacontent = {
 
 var timeFunc = function(){
      if(seconds < 0){
-         clearInterval(stopTimer);
+         clearInterval(intId);
      }
      else{
          //console.log(seconds);
          timerEl.textContent = "Time: " + seconds;
          seconds--;
          if (seconds === 0){
-            window.alert("Quiz over");
+           // window.alert("Quiz over");
+           finalPage();
         }
      }
      
+}
+
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+
+var highScore = function(event){
+    if (event.target === sbmtEl){
+        removeAllChildNodes(newContent);
+        removeAllChildNodes(newSubContent);
+        removeAllChildNodes(ulEl);
+        removeAllChildNodes(firstLiEl);
+        score = JSON.parse(localStorage.getItem("scores"))
+        console.log("Heyyyyyyyyyyyy");
+        console.log(score);
+        if (inputEl.value in score){
+            score[inputEl.value].push(seconds);
+            
+        }
+        else{
+            arr = [];
+            arr.push(seconds);
+            score[inputEl.value] = arr;
+        }
+        
+        console.log(score);
+        saveScores();
+        ulEl.className = "ulEl";
+        hEl.textContent = "High Scores";
+        hEl.className = "heading";
+        firstLiEl.appendChild(hEl);
+        firstLiEl.className = "firstListEl";
+        ulEl.appendChild(firstLiEl);
+        
+        var liEl = document.createElement("li");
+        liEl.textContent = inputEl.value + " - " + "22";
+        liEl.className = "listScore";
+        var liBtnEl = document.createElement("li");
+        var text1 = document.createTextNode("Go Back");
+        var text2 = document.createTextNode("Clear High Scores");
+        goBackBtn.appendChild(text1);
+        goBackBtn.className = "btn";
+        clearScoresBtn.appendChild(text2);
+        clearScoresBtn.className = "btn";
+        liBtnEl.appendChild(goBackBtn);
+        liBtnEl.appendChild(clearScoresBtn);
+        liBtnEl.className = "liBtnEl";
+        ulEl.appendChild(liEl);
+        ulEl.appendChild(liBtnEl);
+        newSubContent.appendChild(ulEl);
+
+    }
+}
+
+var finalPage = function(){
+    clearInterval(intId);
+    removeAllChildNodes(newSubContent);
+    
+    hEl.textContent = "All Done!";
+    h3El.textContent = "Your final score is " + (seconds+1);
+    h3El.className = "h3El";
+    inputEl.name = "text";
+    inputEl.type = "text";
+    labelEl.htmlFor = "text";
+    labelEl.textContent = "Enter initials:";
+    labelEl.className = "h3El";
+    sbmtEl.type = "submit";
+    sbmtEl.value = "Submit";
+    sbmtEl.className = "btn";
+    finalDivEl.appendChild(hEl);
+    finalDivEl.appendChild(h3El);
+    finalDivEl.appendChild(labelEl);
+    finalDivEl.appendChild(inputEl);
+    finalDivEl.appendChild(sbmtEl);
+    finalDivEl.className = "finalDivEl";
+    newSubContent.appendChild(finalDivEl);
+
+    
+
 }
 
 var edit_qa = function(){
@@ -82,15 +181,20 @@ var create_qa = function(){
     newContent.removeChild(newContent.childNodes[1]);
     newSubContent.removeChild(newSubContent.childNodes[1]);
     
-    var ulEl = document.createElement("ul");
     
-    var firstLiEl = document.createElement("li");
-    firstLiEl.className = "listEl";
-    var hEl = document.createElement("h2");
+    
+    
+    firstLiEl.className = "firstListEl";
+    
+    listDivEl.className = "listDivEl";
+    
+
     hEl.textContent =  qacontent[question_num]["question"];
     
     hEl.className = "main-heading";   
-    firstLiEl.appendChild(hEl);
+    listDivEl.appendChild(hEl);
+    firstLiEl.appendChild(listDivEl);
+    ulEl.className = "ulEl";
     ulEl.appendChild(firstLiEl);
     //newContent.appendChild(ulEl);
     for(var i = 0; i<4; i++){
@@ -106,7 +210,7 @@ var create_qa = function(){
         
     }     
     
-    question_num ++;
+   // question_num ++;
     newSubContent.appendChild(ulEl);
     btnEl.removeChild(btnEl.childNodes[1]);
 }
@@ -115,7 +219,7 @@ var stopTimer = function(){
    
    
 
-    setInterval(timeFunc,1000);
+    intId = setInterval(timeFunc,1000);
     
     create_qa();
     
@@ -146,11 +250,13 @@ var changeOption = function(event){
         setTimeout(function(){
             mainEl.removeChild(divEl);
             if (question_num - 1 === Object.keys(qacontent).length || seconds === 0){
-                window.alert("Game Over!");
+                //window.alert("Game Over!");
+                
+                finalPage();
             }
             else{
                 if (seconds<=0){
-                    window.alert("Quiz Over");
+                    finalPage();
                 }
                 else{
                     edit_qa();
@@ -162,3 +268,4 @@ var changeOption = function(event){
 }
 var changeTimerEl = btnClick.addEventListener("click",stopTimer);
 var optionEl = newSubContent.addEventListener("click",changeOption);
+var highscoreEl = finalDivEl.addEventListener("click",highScore);

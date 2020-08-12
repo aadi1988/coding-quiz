@@ -39,6 +39,8 @@
     
     justify-content: center;
     align-items: center;
+    text-align: justify;
+    max-width: 80%;
 }
 
 .subcontent{
@@ -74,6 +76,7 @@
     background-color: #5A0659;
     color: white;
     font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
 }
 
 .new-btn{
@@ -90,6 +93,26 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.ulEl{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+    align-content: center;
+}
+
+.firstListEl{
+    display: flex;
+    justify-content: flex-start;
+    align-content: center;
+    list-style: none;
+    
+    margin-top: 10px;
+    width: 80%;
+    margin-bottom: 20px;
+    
+}
 
 .listEl{
     list-style: none;
@@ -97,6 +120,7 @@
     margin-top: 10px;
     width: 60%;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .line{
@@ -113,4 +137,45 @@
     margin-left: -200px;
     font-size: 20px;
     color: grey;
+}
+
+.h3El{
+    font-size: 22px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.finalDivEl{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.heading{
+    
+    font-size: 35px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.listScore{
+    list-style: none;
+    
+    margin-top: 10px;
+    width: 60%;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: rgba(177,156,217,0.5);
+}
+
+.liBtnEl{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: center;
 }
