@@ -1,17 +1,19 @@
-var scoreTimeEl = document.querySelector(".high-score-time");
-var scoreEl = document.createElement("a");
-var timerEl = document.createElement("span");
-var newContent = document.querySelector("#content");
-var newSubContent = document.querySelector("#subcontent");
-var btnEl = document.querySelector("#start");
-var mainEl = document.querySelector("#main");
-var seconds = 75;
-var question_num = 1;
-var intId;
-var score = new Object();
-var arr = [];
-var listDivEl = document.createElement("div");
-var inputEl = document.createElement("input");
+var scoreTimeEl = document.querySelector(".high-score-time"); //container with score and timer elements on landing page
+var scoreEl = document.createElement("a"); //view score link
+var timerEl = document.createElement("span"); //display timer
+var newContent = document.querySelector("#content"); //container for heading on landing page
+var newSubContent = document.querySelector("#subcontent"); // container for subheading and questions and answers
+var btnEl = document.querySelector("#start"); //container for submit button on landing page
+var mainEl = document.querySelector("#main"); //main section of the body
+var seconds = 75; //starting value of the timer
+var question_num = 1; //starting value in dictionary for questions
+var intId; //interval id returned by the setInterval timer
+var score = new Object(); //dictionary for storing scores
+var arr = []; //array to store scores for a particular person
+var listDivEl = document.createElement("div"); //container for list of scores
+var inputEl = document.createElement("input"); //input element to get the person's name who is taking the quiz
+var finalScore = 0; //final score for a particular person in one instance 
+//Dictionary of questions, multichoice answers and expected answer
 var qacontent = {
     1 : {
         "question": "Which of the following is not a data type supported by JavaScript?",
@@ -63,8 +65,8 @@ var qacontent = {
 
     9: {
         "question": "Which of the following function of String object returns the index within the calling String object of the first occurrence of the specified value?",
-        "options": ["substr()", "search()", "lastIndexOf()","indexof"],
-        "answer": "indexOf"
+        "options": ["substr()", "search()", "lastIndexOf()","indexOf()"],
+        "answer": "indexOf()"
     },
 
     10: {
@@ -105,48 +107,41 @@ var qacontent = {
     }
 };
 
+//save the scores in localStorage
 var saveScores = function(){
     localStorage.setItem("scores",JSON.stringify(score));
 }
 
+//get scores from localStorage(if available) and append current score
 var getScore = function(){
     if (JSON.parse(localStorage.getItem("scores"))=== null){
         score = {};
     }
     else{
-        console.log("hey!");
+        
         score = JSON.parse(localStorage.getItem("scores"));
     }    
-    console.log(score);
+    
     if (inputEl.value){
         if (inputEl.value in score){
-            score[inputEl.value].push(seconds);
-            
+            score[inputEl.value].push(finalScore);       
         }
         else{
             arr = [];
-            if (seconds <= 0){
-                arr.push(0)
-            }
-            else{
-                arr.push((seconds+1));
-            }
-            
+            arr.push(finalScore);
             score[inputEl.value] = arr;
         }
-        
-        console.log(score);
     }
-    
-    
 }
 
+//remove all childnodes of a given parent
 var removeAllChildNodes = function(parent) {
     while (parent.firstChild) {
        parent.removeChild(parent.firstChild);
     }
 }
 
+//Check for the validity of the user given input name
 var checkInputField = function(){
     var num = ["0","1","2","3","4","5","6","7","8","9"];
     console.dir(inputEl);
@@ -160,6 +155,7 @@ var checkInputField = function(){
     }
 }
 
+//create a list of multichoice answers and display on the page
 var createListElements = function(ulEl){
     for(var i = 0; i<4; i++){
         var liEl = document.createElement("li");
@@ -174,6 +170,7 @@ var createListElements = function(ulEl){
     }     
 }
 
+//create a list of scores and display on the page
 var createHighscoreList = function(ulEl){
     
     for (const key in score){
@@ -187,6 +184,7 @@ var createHighscoreList = function(ulEl){
     }  
 }
 
+//Highscore page displaying all high scores
 var highScorePage = function(){
     removeAllChildNodes(scoreTimeEl);
     removeAllChildNodes(newContent);
@@ -224,6 +222,7 @@ var highScorePage = function(){
 
 }
 
+//Calling function to validate input from user and then display all high scores
 var highScore = function(){
 
     if(checkInputField()){
@@ -231,8 +230,14 @@ var highScore = function(){
     }
 }
 
+//final page to get user input name and show score for the currrent instance of the quiz
 var finalPage = function(){
+    //stop timer
     clearInterval(intId);
+    if(seconds<=0){
+        var timerEl = scoreTimeEl.querySelector("#timer");
+        timerEl.textContent = "Time: 0";
+    }
     removeAllChildNodes(newSubContent);  
     var hEl = document.createElement("h2");
     var h3El = document.createElement("h3");
@@ -241,7 +246,15 @@ var finalPage = function(){
     var sbmtEl = document.createElement("input");
     var finalDivEl = document.createElement("div");
     hEl.textContent = "All Done!";
-    h3El.textContent = "Your final score is " + (seconds+1);
+    //validate seconds and make sure negative scores are not displayed.
+    if (seconds <= 0){
+        h3El.textContent = "Your final score is " + 0;
+        finalScore = 0;
+    }
+    else{
+        h3El.textContent = "Your final score is " + (seconds+1);
+        finalScore = seconds + 1;
+    } 
     h3El.className = "h3El";
     inputEl.name = "text";
     inputEl.type = "text";
@@ -260,6 +273,7 @@ var finalPage = function(){
     newSubContent.appendChild(finalDivEl);
 }
 
+//Change the questions and answers on answering the question
 var editQa = function(){
     var question = newSubContent.querySelector(".main-heading");
     question.textContent = qacontent[question_num]["question"];
@@ -268,6 +282,7 @@ var editQa = function(){
     }         
 }
 
+//first question and multichoice answers
 var createQa = function(){
     removeAllChildNodes(newContent);
     //    newContent.removeChild(newContent.childNodes[1]);
@@ -294,6 +309,8 @@ var createQa = function(){
     console.dir(btnEl);
 }
 
+/*sCall the final page to display scores or the next question depending on whether
+ all questions have been answered/timer has expired or not.*/
 var nextPage = function(divEl){
     setTimeout(function(){
         mainEl.removeChild(divEl);
@@ -312,10 +329,8 @@ var nextPage = function(divEl){
     },900);
 }
 
-var changeOption = function(event){
-    
-    if (event.target.matches(".new-btn")){
-        console.log(event.target.textContent.substr(3));
+/*Display whether user picked the right or wrong answer and accordingly go to the next  question*/
+var displayRightWrong = function(){
         var divEl = document.createElement("div");
         var hrEl = document.createElement("hr");
         hrEl.className = "line";
@@ -335,12 +350,23 @@ var changeOption = function(event){
         mainEl.appendChild(divEl);
         question_num++;
         nextPage(divEl);
-        
+}
+
+
+/*Event listener options : 
+1) Given user input to answer a question - display whether it is right or wrong
+2) when quiz is over and the user gives the name and submits
+3) Go back to landing page from high score page
+4) Clear all high scores
+*/
+var changeOption = function(event){
+    
+    if (event.target.matches(".new-btn")){
+        displayRightWrong();     
     }
     else if(event.target.matches(".sbmt-btn")){
         highScore();
     }
-
     else if(event.target.matches("#goBackBtn")){
         removeAllChildNodes(newSubContent);
         inputEl.value = "";
@@ -356,36 +382,38 @@ var changeOption = function(event){
     }
 }
 
-
+/*timer function*/
 var timeFunc = function(){
     if(seconds < 0){
         clearInterval(intId);
     }
     else{
-        //console.log(seconds);
+       
         timerEl.textContent = "Time: " + seconds;
         seconds--;
         if (seconds < 0){
-          // window.alert("Quiz over");
+          // Quiz is over 
           finalPage();
        }
     }
     
 }
 
-var stopTimer = function(){
+//Start the timer
+var startTimer = function(){
    
     if (event.target.matches("#btn")){
         intId = setInterval(timeFunc,1000);       
-        createQa();
+        createQa(); //Start the quiz
     }
 }
 
+//When link for view high scores is clicked this function is called
 var viewHighScorePage = function(){
      removeAllChildNodes(btnEl);
      highScorePage();
 }
-
+//Main Landing page
 var landingPage = function(){
     var h3El1 = document.createElement("h3");
     var h3El2 = document.createElement("h3");
@@ -397,6 +425,7 @@ var landingPage = function(){
     h3El2.textContent = "Keep in mind that incorrect answers will penalize your score/time by ten seconds!";
     h3El2.className = "h3El2";
     console.log("Entering landing page");
+    //Timer and high scores
     scoreEl.textContent = "View High Scores";
     scoreEl.href = "#";
     scoreEl.className = "high-score";
@@ -404,6 +433,7 @@ var landingPage = function(){
     timerEl.id = "timer";
     scoreTimeEl.appendChild(scoreEl);
     scoreTimeEl.appendChild(timerEl);
+    //Coding Quiz challenge header and subheaders
     hEl.textContent = "Coding Quiz Challenge";
     hEl.className = "main-heading";
     divEl.appendChild(hEl);
@@ -413,6 +443,7 @@ var landingPage = function(){
     divEl2.appendChild(h3El2); 
     newSubContent.appendChild(divEl2);
     divEl2.className = "divEl2";
+    //Start the quiz
     buttonEl.textContent = "Start Quiz";
     buttonEl.className = "btn";
     buttonEl.id = "btn";
@@ -420,6 +451,7 @@ var landingPage = function(){
 }
 
 landingPage();
-var changeTimerEl = btnEl.addEventListener("click",stopTimer);
+//Add event listeners
+var changeTimerEl = btnEl.addEventListener("click",startTimer);
 var optionEl = newSubContent.addEventListener("click",changeOption);
 var viewHighScores = scoreEl.addEventListener("click",viewHighScorePage);
