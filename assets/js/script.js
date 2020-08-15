@@ -18,8 +18,7 @@ var ulEl = document.createElement("ul");
 var olEl = document.createElement("ol");
 
 var listDivEl = document.createElement("div");
-var goBackBtn = document.createElement("button");
-var clearScoresBtn = document.createElement("button");
+
 var question_num = 1;
 var score = new Object();
 var arr = [];
@@ -118,6 +117,8 @@ var changePageFunc = function(){
 }
 
 var highScorePage = function(){
+        var goBackBtn = document.createElement("button");
+        var clearScoresBtn = document.createElement("button");
     
         removeAllChildNodes(scoreTimeEl);
         removeAllChildNodes(newContent);
