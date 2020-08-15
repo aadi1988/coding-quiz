@@ -72,7 +72,7 @@ var qacontent = {
     10: {
         "question": "Which of the following function of String object creates a string to be displayed as bold as if it were in a <b> tag?",
         "options": ["anchor()", "big()", "blink()", "bold()"],
-        "answer": "bold"
+        "answer": "bold()"
     },
 
     11: {
