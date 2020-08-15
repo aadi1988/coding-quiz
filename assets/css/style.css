@@ -236,9 +236,15 @@ body{
 
 /*change attributes when screen size changes*/
 @media screen and (max-width: 580px){
+    /*change font of main header on landing page when screen size reduces*/
     .main-heading{
         font-size: 30px;
         display: block;
         max-width: 100%;
     }
+    /*remove change of color on touch devices*/
+    .btn:hover, .sbmt-btn:hover, .new-btn:hover {
+        background-color: #5A0659;
+    }
+
 }
